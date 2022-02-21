@@ -1,26 +1,17 @@
 import type { NextPage } from 'next';
-import Head from 'next/head';
-import Header from '../components/Header';
+import Layout from '../components/Layout';
 
-const Home: NextPage = () => {
+const ChargingStationPage: NextPage = () => {
   return (
-    <div>
-      <Head>
-        <title>Stasiun Pengisian Kendaraan Listrik ITB</title>
-        <meta
-          name="description"
-          content="Stasiun Pengisian Kendaraan Listrik ITB"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Header />
-
-      <main>
-        <h1 className="font-bold text-red-500">SPKL ITB</h1>
-      </main>
-    </div>
+    <Layout title="Charging Station">
+      <p>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam magni
+        a, neque omnis deleniti impedit doloribus eligendi hic eum esse error
+        alias unde pariatur dicta cum voluptate voluptatem consequuntur
+        dignissimos.
+      </p>
+    </Layout>
   );
 };
 
-export default Home;
+export default ChargingStationPage;
