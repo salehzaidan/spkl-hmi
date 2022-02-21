@@ -14,7 +14,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <h1>SPKL ITB</h1>
+        <h1 className="text-red-500 font-bold">SPKL ITB</h1>
       </main>
     </div>
   );
