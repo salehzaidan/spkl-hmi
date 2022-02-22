@@ -16,7 +16,7 @@ function Header() {
         <div className="text-sm font-medium">Institut Teknologi Bandung</div>
       </h1>
 
-      <Menu as="div" className="md:hidden">
+      <Menu as="div" className="relative z-10 md:hidden">
         <Menu.Button className="w-11 space-y-1.5 rounded px-2.5 py-2 hover:bg-indigo-800">
           <div className="h-0.5 bg-white" />
           <div className="h-0.5 bg-white" />
