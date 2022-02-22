@@ -1,6 +1,8 @@
 import type { NextPage } from 'next';
 import React, { useMemo, useState } from 'react';
 import { Icon } from '@iconify/react';
+import { format } from 'date-fns';
+import { CSVLink } from 'react-csv';
 import DatePicker from 'react-datepicker';
 import CustomDateInput from '../components/CustomDateInput';
 import Layout from '../components/Layout';
@@ -26,6 +28,15 @@ const columns = [
   { Header: 'Energy (Wh)', accessor: 'energy' },
   { Header: 'Cost (Rp)', accessor: 'cost' },
 ] as const;
+
+const headers = [
+  { label: 'Transaction ID', key: 'transactionId' },
+  { label: 'Start Date', key: 'start' },
+  { label: 'Stop Date', key: 'stop' },
+  { label: 'Charging Time', key: 'chargingTime' },
+  { label: 'Energy (Wh)', key: 'energy' },
+  { label: 'Cost (Rp)', key: 'cost' },
+];
 
 const DailyPage: NextPage = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -54,7 +65,7 @@ const DailyPage: NextPage = () => {
   return (
     <Layout title="Daily Transaction">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[auto_1fr]">
-        <div className="flex items-center gap-2 self-start justify-self-center md:justify-self-start">
+        <div className="grid w-fit grid-cols-[1fr_auto] grid-rows-[auto_auto] justify-items-center gap-2 justify-self-center">
           <div className="w-60">
             <DatePicker
               selected={startDate}
@@ -64,6 +75,7 @@ const DailyPage: NextPage = () => {
               customInput={<CustomDateInput icon="bi:calendar2-day" />}
             />
           </div>
+
           {startDate && (
             <button onClick={() => setStartDate(null)}>
               <Icon
@@ -71,6 +83,17 @@ const DailyPage: NextPage = () => {
                 className="h-6 w-6 text-red-600 hover:text-red-700"
               />
             </button>
+          )}
+
+          {!error && !loading && displayData && startDate && (
+            <CSVLink
+              className="inline-block justify-self-start rounded bg-green-600 px-3 py-1.5 text-white hover:bg-green-700"
+              headers={headers}
+              data={displayData}
+              filename={`SPKL_${format(startDate, dateRawFormat)}`}
+            >
+              Export
+            </CSVLink>
           )}
         </div>
 
@@ -93,7 +116,7 @@ const DailyPage: NextPage = () => {
         <p
           className={`${
             error ? 'text-red-500' : ''
-          } self-center justify-self-center text-lg font-medium md:justify-self-start`}
+          } mt-0.5 justify-self-center text-lg font-medium md:justify-self-start`}
         >
           {error
             ? 'Error, data could not be fetched'
