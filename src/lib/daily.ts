@@ -6,4 +6,5 @@ export interface DailyRawData {
   stop_value: number;
 }
 
-export const dateFormat = 'yyyy-MM-dd';
+export const dateRawFormat = 'yyyy-MM-dd';
+export const dateDisplayFormat = 'dd MMMM yyyy';

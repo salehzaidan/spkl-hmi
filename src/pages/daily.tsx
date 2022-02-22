@@ -5,7 +5,7 @@ import CustomDateInput from '../components/CustomDateInput';
 import Layout from '../components/Layout';
 import Table from '../components/Table';
 import type { DailyRawData } from '../lib/daily';
-import { dateFormat } from '../lib/daily';
+import { dateDisplayFormat, dateRawFormat } from '../lib/daily';
 import useFilter from '../lib/hooks/useFilter';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -23,14 +23,14 @@ const DailyPage: NextPage = () => {
   const { data, error, loading } = useFilter<{ value: DailyRawData[] }>(
     `${process.env.NEXT_PUBLIC_DATA_PROVIDER}/daily`,
     startDate,
-    dateFormat
+    dateRawFormat
   );
 
   return (
     <Layout title="Daily Transaction">
       <DatePicker
         selected={startDate}
-        dateFormat={dateFormat}
+        dateFormat={dateDisplayFormat}
         onChange={date => setStartDate(date)}
         customInput={React.createElement(CustomDateInput)}
         wrapperClassName="!w-60"
