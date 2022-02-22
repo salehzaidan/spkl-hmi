@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
+import CustomDateInput from '../components/CustomDateInput';
 import Layout from '../components/Layout';
 import Table from '../components/Table';
 import type { DailyRawData } from '../lib/daily';
@@ -31,6 +32,8 @@ const DailyPage: NextPage = () => {
         selected={startDate}
         dateFormat={dateFormat}
         onChange={date => setStartDate(date)}
+        customInput={React.createElement(CustomDateInput)}
+        wrapperClassName="!w-60"
       />
 
       {error ? (
