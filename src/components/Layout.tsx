@@ -8,7 +8,7 @@ interface Props {
 
 function Layout({ title, children }: Props) {
   return (
-    <div className="grid min-h-screen grid-rows-[auto_1fr]">
+    <div className="grid min-h-screen grid-rows-[auto_1fr] overflow-x-hidden">
       <Head>
         <title>Stasiun Pengisian Kendaraan Listrik ITB</title>
         <meta
@@ -20,7 +20,7 @@ function Layout({ title, children }: Props) {
 
       <Header />
 
-      <main className="bg-gray-50 p-8">
+      <main className="w-screen bg-gray-50 p-8">
         <div className="mx-auto max-w-screen-lg">
           <h1 className="text-2xl font-medium">{title}</h1>
           {children}
