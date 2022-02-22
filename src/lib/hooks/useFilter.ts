@@ -8,6 +8,7 @@ interface State<T> {
 }
 
 type Action<T> =
+  | { type: 'reset' }
   | { type: 'loading' }
   | { type: 'fetched'; payload: T }
   | { type: 'error'; payload: Error };
@@ -21,6 +22,8 @@ function useFilter<T>(url: string, date: Date | null, dateFormat: string) {
 
   function reducer(state: State<T>, action: Action<T>): State<T> {
     switch (action.type) {
+      case 'reset':
+        return initialState;
       case 'loading':
         return { ...initialState, loading: true };
       case 'fetched':
@@ -34,7 +37,10 @@ function useFilter<T>(url: string, date: Date | null, dateFormat: string) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!date) return;
+      if (!date) {
+        dispatch({ type: 'reset' });
+        return;
+      }
       const param = format(date, dateFormat);
 
       dispatch({ type: 'loading' });

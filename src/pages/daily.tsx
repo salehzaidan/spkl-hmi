@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import React, { useMemo, useState } from 'react';
+import { Icon } from '@iconify/react';
 import DatePicker from 'react-datepicker';
 import CustomDateInput from '../components/CustomDateInput';
 import Layout from '../components/Layout';
@@ -53,14 +54,24 @@ const DailyPage: NextPage = () => {
   return (
     <Layout title="Daily Transaction">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[auto_1fr]">
-        <div className="w-60 justify-self-center md:justify-self-start">
-          <DatePicker
-            selected={startDate}
-            dateFormat={dateDisplayFormat}
-            onChange={date => setStartDate(date)}
-            // @ts-ignore
-            customInput={<CustomDateInput icon="bi:calendar2-day" />}
-          />
+        <div className="flex items-center gap-2 self-start justify-self-center md:justify-self-start">
+          <div className="w-60">
+            <DatePicker
+              selected={startDate}
+              dateFormat={dateDisplayFormat}
+              onChange={date => setStartDate(date)}
+              // @ts-ignore
+              customInput={<CustomDateInput icon="bi:calendar2-day" />}
+            />
+          </div>
+          {startDate && (
+            <button onClick={() => setStartDate(null)}>
+              <Icon
+                icon="charm:cross"
+                className="h-6 w-6 text-red-600 hover:text-red-700"
+              />
+            </button>
+          )}
         </div>
 
         {!error && !loading && stats && (
