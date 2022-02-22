@@ -50,7 +50,8 @@ const DailyPage: NextPage = () => {
         selected={startDate}
         dateFormat={dateDisplayFormat}
         onChange={date => setStartDate(date)}
-        customInput={React.createElement(CustomDateInput)}
+        // @ts-ignore
+        customInput={<CustomDateInput icon="bi:calendar2-day" />}
         wrapperClassName="!w-60"
       />
 
