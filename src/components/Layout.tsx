@@ -22,7 +22,7 @@ function Layout({ title, children }: Props) {
 
       <main className="w-screen bg-gray-50 p-8">
         <div className="mx-auto max-w-screen-lg">
-          <h1 className="text-2xl font-medium">{title}</h1>
+          <h1 className="mb-4 text-2xl font-medium">{title}</h1>
           {children}
         </div>
       </main>

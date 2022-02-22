@@ -27,12 +27,18 @@ export interface DailyDisplayData {
   cost: string;
 }
 
+interface DailyStats {
+  totalTransaction: number;
+  totalEnergy: number;
+  totalCost: currency;
+}
+
 export const dateRawFormat = 'yyyy-MM-dd';
 export const dateDisplayFormat = 'dd MMMM yyyy';
 export const timestampDisplayFormat = 'dd MMMM yyyy, HH:mm:ss';
 
 const costFactor = 2.466;
-const currencyOptions = {
+export const currencyOptions = {
   symbol: 'Rp',
   separator: '.',
   decimal: ',',
@@ -64,4 +70,18 @@ export function displayDailyData(data: DailyData[]): DailyDisplayData[] {
     chargingTime: formatDuration(d.chargingTime),
     cost: d.cost.format(),
   }));
+}
+
+export function calcDailyStats(data: DailyData[]): DailyStats {
+  return {
+    totalTransaction: data.length,
+    totalEnergy: data.reduce((previous, current) => ({
+      ...current,
+      energy: previous.energy + current.energy,
+    })).energy,
+    totalCost: data.reduce((previous, current) => ({
+      ...current,
+      cost: previous.cost.add(current.cost),
+    })).cost,
+  };
 }

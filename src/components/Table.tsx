@@ -6,14 +6,17 @@ import { useTable } from 'react-table';
 interface Props<T extends object> {
   columns: ReadonlyArray<Column<T>>;
   data: T[];
+  className?: string;
 }
 
-function Table<T extends object>({ columns, data }: Props<T>) {
+function Table<T extends object>({ columns, data, className }: Props<T>) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
 
   return (
-    <div className="overflow-x-auto rounded-md border border-gray-200 shadow">
+    <div
+      className={`${className} overflow-x-auto rounded-md border border-gray-200 shadow`}
+    >
       <table
         className="w-full table-auto border-collapse text-sm"
         {...getTableProps()}
