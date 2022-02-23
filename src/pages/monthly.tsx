@@ -17,6 +17,15 @@ import {
 import useFilter from '../lib/hooks/useFilter';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import {
+  Bar,
+  BarChart,
+  Label,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 const headers = [
   { label: 'Date', key: 'date' },
@@ -92,7 +101,25 @@ const MonthlyPage: NextPage = () => {
         )}
 
         {!error && !loading && data && (
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+          <ResponsiveContainer aspect={3} className="md:col-span-2">
+            <BarChart
+              data={data.daily}
+              margin={{ top: 5, right: 5, bottom: 20, left: 20 }}
+            >
+              <XAxis dataKey="date">
+                <Label position="insideBottom" dy={20}>
+                  Date
+                </Label>
+              </XAxis>
+              <YAxis>
+                <Label position="insideLeft" angle={-90} dx={-5} dy={40}>
+                  Energy (Wh)
+                </Label>
+              </YAxis>
+              <Tooltip />
+              <Bar dataKey="energy" fill="rgb(67 56 202)" />
+            </BarChart>
+          </ResponsiveContainer>
         )}
 
         <p
