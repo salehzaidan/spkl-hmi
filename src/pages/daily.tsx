@@ -11,10 +11,10 @@ import Table from '../components/Table';
 import type { DailyRawData } from '../lib/daily';
 import {
   dateRawFormat,
-  dateDisplayFormat,
   parseDailyData,
   displayDailyData,
   calcDailyStats,
+  dateDisplayFormat,
 } from '../lib/daily';
 import useFilter from '../lib/hooks/useFilter';
 
@@ -73,6 +73,7 @@ const DailyPage: NextPage = () => {
               onChange={date => setStartDate(date)}
               // @ts-ignore
               customInput={<CustomDateInput icon="bi:calendar2-day" />}
+              placeholderText="Select date"
             />
           </div>
 

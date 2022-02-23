@@ -1,5 +1,7 @@
 import currency from 'currency.js';
 import { format, formatDuration, intervalToDuration } from 'date-fns';
+import type { Stats } from './utils';
+import { costFactor, currencyOptions } from './utils';
 
 export interface DailyRawData {
   transaction_pk: number;
@@ -27,23 +29,9 @@ export interface DailyDisplayData {
   cost: string;
 }
 
-interface DailyStats {
-  totalTransaction: number;
-  totalEnergy: number;
-  totalCost: currency;
-}
-
 export const dateRawFormat = 'yyyy-MM-dd';
 export const dateDisplayFormat = 'dd MMMM yyyy';
 export const timestampDisplayFormat = 'dd MMMM yyyy, HH:mm:ss';
-
-const costFactor = 2.466;
-export const currencyOptions = {
-  symbol: 'Rp',
-  separator: '.',
-  decimal: ',',
-  precision: 0,
-};
 
 export function parseDailyData(rawData: DailyRawData[]): DailyData[] {
   return rawData.map(d => {
@@ -72,7 +60,7 @@ export function displayDailyData(data: DailyData[]): DailyDisplayData[] {
   }));
 }
 
-export function calcDailyStats(data: DailyData[]): DailyStats {
+export function calcDailyStats(data: DailyData[]): Stats {
   return {
     totalTransaction: data.length,
     totalEnergy: data.reduce((previous, current) => ({

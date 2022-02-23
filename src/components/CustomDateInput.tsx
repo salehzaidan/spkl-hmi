@@ -3,12 +3,13 @@ import { forwardRef } from 'react';
 
 interface Props {
   icon: string;
+  placeholder: string;
   value: string;
   onClick: (e: React.FormEvent<HTMLButtonElement>) => void;
 }
 
 const CustomDateInput = forwardRef<HTMLButtonElement, Props>(
-  ({ icon, value, onClick }, ref) => {
+  ({ icon, placeholder, value, onClick }, ref) => {
     return (
       <button
         className="flex w-full items-center gap-2.5 rounded border border-gray-300 bg-white px-2.5 py-1 text-left hover:bg-indigo-50"
@@ -16,7 +17,7 @@ const CustomDateInput = forwardRef<HTMLButtonElement, Props>(
         onClick={onClick}
       >
         <Icon icon={icon} />
-        {value || 'Select date'}
+        {value || placeholder}
       </button>
     );
   }

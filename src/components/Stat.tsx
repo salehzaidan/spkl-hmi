@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Icon } from '@iconify/react';
 import currency from 'currency.js';
-import { currencyOptions } from '../lib/daily';
+import { currencyOptions } from '../lib/utils';
 
 interface Props {
   type: 'transaction' | 'energy' | 'cost';
