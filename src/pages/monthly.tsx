@@ -41,8 +41,7 @@ const MonthlyPage: NextPage = () => {
     loading,
   } = useFilter<{ value: MonthlyRawData[] }>(
     `${process.env.NEXT_PUBLIC_DATA_PROVIDER}/monthly`,
-    startMonth,
-    monthRawFormat
+    { date: startMonth, dateFormat: monthRawFormat }
   );
 
   const data = useMemo(() => {

@@ -13,7 +13,16 @@ type Action<T> =
   | { type: 'fetched'; payload: T }
   | { type: 'error'; payload: Error };
 
-function useFilter<T>(url: string, date: Date | null, dateFormat: string) {
+interface Options {
+  date?: Date | null;
+  dateFormat?: string;
+  useParam?: boolean;
+}
+
+function useFilter<T>(
+  url: string,
+  { date, dateFormat, useParam = true }: Options
+) {
   const initialState: State<T> = {
     data: undefined,
     error: undefined,
@@ -37,16 +46,25 @@ function useFilter<T>(url: string, date: Date | null, dateFormat: string) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!date) {
-        dispatch({ type: 'reset' });
-        return;
-      }
-      const param = format(date, dateFormat);
-
       dispatch({ type: 'loading' });
 
       try {
-        const response = await fetch(`${url}/${param}`);
+        let response: Response;
+
+        if (useParam) {
+          if (!date) {
+            dispatch({ type: 'reset' });
+            return;
+          }
+          if (!dateFormat) {
+            throw new Error('dateFormat is required when using parameter');
+          }
+          const param = format(date, dateFormat);
+          response = await fetch(`${url}/${param}`);
+        } else {
+          response = await fetch(url);
+        }
+
         if (!response.ok) {
           throw new Error(response.statusText);
         }

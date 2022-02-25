@@ -46,8 +46,7 @@ const DailyPage: NextPage = () => {
     loading,
   } = useFilter<{ value: DailyRawData[] }>(
     `${process.env.NEXT_PUBLIC_DATA_PROVIDER}/daily`,
-    startDate,
-    dateRawFormat
+    { date: startDate, dateFormat: dateRawFormat }
   );
 
   const data = useMemo(() => {
