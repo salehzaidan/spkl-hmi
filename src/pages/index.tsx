@@ -1,17 +1,43 @@
 import type { NextPage } from 'next';
+import { useMemo } from 'react';
 import Layout from '../components/Layout';
+import useFilter from '../lib/hooks/useFilter';
+import type { StationRawData } from '../lib/station';
+import { parseStationData, displayStationData } from '../lib/station';
 
-const ChargingStationPage: NextPage = () => {
+const StationPage: NextPage = () => {
+  const {
+    data: rawData,
+    error,
+    loading,
+  } = useFilter<StationRawData>(
+    `${process.env.NEXT_PUBLIC_DATA_PROVIDER}/charge`,
+    { useParam: false }
+  );
+
+  const data = useMemo(() => {
+    if (rawData) return parseStationData(rawData);
+  }, [rawData]);
+
+  const displayData = useMemo(() => {
+    if (data) return displayStationData(data);
+  }, [data]);
+
   return (
     <Layout title="Charging Station">
-      <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam magni
-        a, neque omnis deleniti impedit doloribus eligendi hic eum esse error
-        alias unde pariatur dicta cum voluptate voluptatem consequuntur
-        dignissimos.
+      {!error && !loading && displayData && (
+        <pre>{JSON.stringify(displayData, null, 2)}</pre>
+      )}
+
+      <p className={`${error ? 'text-red-500' : ''} text-lg font-medium`}>
+        {error
+          ? 'Error, data could not be fetched'
+          : loading
+          ? 'Loading...'
+          : null}
       </p>
     </Layout>
   );
 };
 
-export default ChargingStationPage;
+export default StationPage;
