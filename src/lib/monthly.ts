@@ -1,4 +1,6 @@
 import currency from 'currency.js';
+import { format } from 'date-fns';
+import { timestampChartDetailFormat } from './station';
 import type { Stats } from './utils';
 import { costFactor, currencyOptions } from './utils';
 
@@ -21,6 +23,17 @@ export interface MonthlyData {
   }[];
 }
 
+export interface MonthlyDisplayData {
+  transactionNum: number;
+  daily: {
+    date: number;
+    energy: number;
+    cost: string;
+  }[];
+  labelFormatter: (label: number, startMonth: Date) => string;
+  formatter: (value: number) => [string, string?];
+}
+
 export const monthRawFormat = 'yyyy-MM';
 export const monthDisplayFormat = 'MMMM yyyy';
 
@@ -35,6 +48,21 @@ export function parseMonthlyData(rawData: MonthlyRawData): MonthlyData {
         symbol: '',
       }),
     })),
+  };
+}
+
+export function displayMonthlyData(data: MonthlyData): MonthlyDisplayData {
+  return {
+    ...data,
+    daily: data.daily.map(d => {
+      return {
+        ...d,
+        cost: d.cost.format(),
+      };
+    }),
+    labelFormatter: (label, startMonth) =>
+      `${label} ${format(startMonth, monthDisplayFormat)}`,
+    formatter: value => [`${value} Wh`, undefined],
   };
 }
 

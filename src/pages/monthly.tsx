@@ -13,6 +13,7 @@ import {
   monthDisplayFormat,
   monthRawFormat,
   parseMonthlyData,
+  displayMonthlyData,
 } from '../lib/monthly';
 import useFilter from '../lib/hooks/useFilter';
 
@@ -47,6 +48,10 @@ const MonthlyPage: NextPage = () => {
   const data = useMemo(() => {
     if (rawData) return parseMonthlyData(rawData.value[0]);
   }, [rawData]);
+
+  const displayData = useMemo(() => {
+    if (data) return displayMonthlyData(data);
+  }, [data]);
 
   const stats = useMemo(() => {
     if (data) return calcMonthlyStats(data);
@@ -99,10 +104,10 @@ const MonthlyPage: NextPage = () => {
           </div>
         )}
 
-        {!error && !loading && data && (
+        {!error && !loading && displayData && startMonth && (
           <ResponsiveContainer aspect={3} className="md:col-span-2">
             <BarChart
-              data={data.daily}
+              data={displayData.daily}
               margin={{ top: 5, right: 5, bottom: 20, left: 20 }}
             >
               <XAxis dataKey="date">
@@ -115,7 +120,12 @@ const MonthlyPage: NextPage = () => {
                   Energy (Wh)
                 </Label>
               </YAxis>
-              <Tooltip />
+              <Tooltip
+                labelFormatter={label =>
+                  displayData.labelFormatter(label, startMonth)
+                }
+                formatter={displayData.formatter}
+              />
               <Bar dataKey="energy" fill="rgb(67 56 202)" />
             </BarChart>
           </ResponsiveContainer>
