@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { eachMinuteOfInterval, format } from 'date-fns';
 import type { DailyData, DailyDisplayData, DailyRawData } from './daily';
 import { parseDailyData, displayDailyData } from './daily';
 
@@ -23,21 +23,28 @@ export interface StationData {
 export interface StationDisplayData {
   transactionId: number;
   power: {
-    timestamp: string;
+    timestamp: number;
     value: number;
   }[];
+  ticks: number[];
+  tickFormatter: (tick: number) => string;
+  labelFormatter: (label: number) => string;
+  formatter: (value: number) => [string, string?];
   values: DailyDisplayData[];
 }
 
-export const timestampChartFormat = 'HH:mm:ss';
+export const timestampChartFormat = 'HH:mm';
+export const timestampChartDetailFormat = 'dd MMM yyyy, HH:mm:ss';
 
 export function parseStationData(data: StationRawData): StationData {
   return {
     transactionId: data.id[0].transaction_pk,
-    power: data.data_power.map(d => ({
-      timestamp: new Date(d.value_timestamp),
-      value: d.value,
-    })),
+    power: data.data_power
+      .map(d => ({
+        timestamp: new Date(d.value_timestamp),
+        value: d.value,
+      }))
+      .sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1)),
     values: parseDailyData(data.value_1),
   };
 }
@@ -47,8 +54,15 @@ export function displayStationData(data: StationData): StationDisplayData {
     ...data,
     power: data.power.map(d => ({
       ...d,
-      timestamp: format(d.timestamp, timestampChartFormat),
+      timestamp: d.timestamp.getTime(),
     })),
+    ticks: eachMinuteOfInterval({
+      start: data.power[0].timestamp,
+      end: data.power[data.power.length - 1].timestamp,
+    }).map(d => d.getTime()),
+    tickFormatter: tick => format(tick, timestampChartFormat),
+    labelFormatter: label => format(label, timestampChartDetailFormat),
+    formatter: value => [`${value} W`, undefined],
     values: displayDailyData(data.values),
   };
 }
