@@ -32,7 +32,10 @@ const StationPage: NextPage = () => {
     loading,
   } = useFilter<StationRawData>(
     `${process.env.NEXT_PUBLIC_DATA_PROVIDER}/charge`,
-    { useParam: false }
+    {
+      useParam: false,
+      delay: Number(process.env.NEXT_PUBLIC_STATION_DELAY) * 1000,
+    }
   );
 
   const data = useMemo(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { format } from 'date-fns';
 
 interface State<T> {
@@ -17,11 +17,12 @@ interface Options {
   date?: Date | null;
   dateFormat?: string;
   useParam?: boolean;
+  delay?: number;
 }
 
 function useFilter<T>(
   url: string,
-  { date, dateFormat, useParam = true }: Options
+  { date, dateFormat, useParam = true, delay }: Options
 ) {
   const initialState: State<T> = {
     data: undefined,
@@ -44,40 +45,54 @@ function useFilter<T>(
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    if (!delay) {
       dispatch({ type: 'loading' });
+    }
 
-      try {
-        let response: Response;
+    try {
+      let response: Response;
 
-        if (useParam) {
-          if (!date) {
-            dispatch({ type: 'reset' });
-            return;
-          }
-          if (!dateFormat) {
-            throw new Error('dateFormat is required when using parameter');
-          }
-          const param = format(date, dateFormat);
-          response = await fetch(`${url}/${param}`);
-        } else {
-          response = await fetch(url);
+      if (useParam) {
+        if (!date) {
+          dispatch({ type: 'reset' });
+          return;
         }
-
-        if (!response.ok) {
-          throw new Error(response.statusText);
+        if (!dateFormat) {
+          throw new Error('dateFormat is required when using parameter');
         }
-
-        const data = (await response.json()) as T;
-        dispatch({ type: 'fetched', payload: data });
-      } catch (error) {
-        dispatch({ type: 'error', payload: error as Error });
+        const param = format(date, dateFormat);
+        response = await fetch(`${url}/${param}`);
+      } else {
+        response = await fetch(url);
       }
-    };
 
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const data = (await response.json()) as T;
+      dispatch({ type: 'fetched', payload: data });
+    } catch (error) {
+      dispatch({ type: 'error', payload: error as Error });
+    }
+  }, [date, dateFormat, url, useParam, delay]);
+
+  useEffect(() => {
+    if (delay) {
+      dispatch({ type: 'loading' });
+    }
     fetchData();
-  }, [url, date, dateFormat]);
+  }, [fetchData, delay]);
+
+  useEffect(() => {
+    if (delay) {
+      let id = setInterval(() => fetchData(), delay);
+      return () => clearInterval(id);
+    } else {
+      fetchData();
+    }
+  }, [fetchData, delay]);
 
   return state;
 }
